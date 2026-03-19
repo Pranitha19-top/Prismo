@@ -50,6 +50,7 @@ Sanjay	working from (2 PM – 9 PM) and rain from (3 PM – 7 PM)- 	4 hours loss
 Same disruption, different loss → different payouts
 # Payout Logic
 hours_lost = overlap(working_hours, disruption_window)
+
 payout = income × disruption_factor × (hours_lost / total_working_hours)
 
 # 3.Dynamic Weekly Premium Pricing
@@ -66,8 +67,11 @@ High Risk → ₹40/week
 # 4. Parametric Triggers
 Automatic claim triggers:
 Rain exceeds threshold
+
 AQI exceeds threshold
+
 Traffic congestion high
+
 Curfew active
 
 # 5. Smart Work Advisor
@@ -77,16 +81,21 @@ Work between 9AM–2PM
 
 # 6. Fraud Detection
 Location validation
+
 Time validation
+
 Duplicate claim prevention
+
 Activity consistency checks
 
 # 7. Risk Heatmap 
 Real-time: shows current risk zones
+
 Historical: used for premium calculation
 
 # 8. Working Hour-Based Coverage Policy
 Coverage is defined based on location-specific working hours.
+
 # Non-Metropolitan Cities
 Coverage: 6:00 AM – 9:00 PM
 Claims outside this window are not eligible
@@ -97,7 +106,9 @@ Extended coverage due to higher demand
 
 # AI/ML Integration
 Risk prediction using multi-factor inputs
+
 Dynamic premium pricing using historical data
+
 Fraud detection using anomaly detection
 
 # Tech Stack
@@ -114,14 +125,23 @@ ML Models (optional): Random Forest
 # DEMO SCENARIO
 
 Ravi logs into the platform
+
 System detects heavy rain + traffic
+
 Risk becomes HIGH
+
 Advisor suggests safer working hours
+
 System checks working-hour eligibility
+
 Overlap calculated → 2 hours loss
-Payout calculated → ₹420
+
+Payout calculated 
+
 Claim triggered automatically
+
 Amount credited
+
 Heatmap and premium updated
 
 ## Workflow
