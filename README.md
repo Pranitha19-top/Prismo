@@ -81,6 +81,33 @@ Claims outside this window are not eligible
 Coverage: 6:00 AM – 3:00 AM
 Extended coverage due to higher demand
 
+# AI/ML Integration
+Risk prediction using multi-factor inputs
+Dynamic premium pricing using historical data
+Fraud detection using anomaly detection
+
+# Tech Stack
+Frontend: React
+Backend: FastAPI (Python)
+Database: SQLite / PostgreSQL
+APIs: Weather, AQI, Traffic 
+ML Models (optional): Random Forest
+
+# DEMO SCENARIO
+
+Ravi logs into the platform
+System detects heavy rain + traffic
+Risk becomes HIGH
+Advisor suggests safer working hours
+System checks working-hour eligibility
+Overlap calculated → 2 hours loss
+Payout calculated → ₹420
+Claim triggered automatically
+Amount credited
+Heatmap and premium updated
+
+
+
 
 
 
