@@ -43,9 +43,9 @@ PRISMO ensures fair compensation based on actual working hour disruption overlap
 Example Scenario :
 Worker	Working Hours	Disruption	Effective Loss
 
-Ravi	9 AM – 5 PM	3 PM – 7 PM	2 hours loss
+Ravi	working from (9 AM – 5 PM)	and rain from (3 PM – 7 PM) -	2 hours loss
 
-Sanjay	2 PM – 9 PM	3 PM – 7 PM	4 hours loss
+Sanjay	working from (2 PM – 9 PM) and rain from (3 PM – 7 PM)- 	4 hours loss
 
 Same disruption, different loss → different payouts
 # Payout Logic
@@ -102,9 +102,13 @@ Fraud detection using anomaly detection
 
 # Tech Stack
 Frontend: React
+
 Backend: FastAPI (Python)
+
 Database: SQLite / PostgreSQL
+
 APIs: Weather, AQI, Traffic 
+
 ML Models (optional): Random Forest
 
 # DEMO SCENARIO
