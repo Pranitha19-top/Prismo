@@ -5,14 +5,20 @@ AI powered parametric insurance platform for gig workers
 💡 Core innovation: Personalized payout + dynamic pricing
 
 # Problem Statement
-Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion, and curfews.These uncontrollable events reduce their working hours and earnings, and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
+Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion, and curfews.
+These uncontrollable events reduce their working hours and earnings, and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
 
 # 👤 Persona
 Name: Ravi Kumar
+
 Role: Swiggy Delivery Partner
+
 Location: Bangalore
+
 Daily Income: ₹700
+
 Working Hours: 9 AM – 5 PM
+
 Ravi depends on daily earnings. During disruptions, he loses income without any safety net. PRISMO ensures automatic protection and intelligent guidance.
 
 # 💡Solution Overview
@@ -36,8 +42,11 @@ Curfew / restrictions
 PRISMO ensures fair compensation based on actual working-hour disruption overlap.
 Example Scenario :
 Worker	Working Hours	Disruption	Effective Loss
+
 Ravi	9 AM – 5 PM	3 PM – 7 PM	2 hours loss
+
 Sanjay	2 PM – 9 PM	3 PM – 7 PM	4 hours loss
+
 Same disruption, different loss → different payouts
 # Payout Logic
 hours_lost = overlap(working_hours, disruption_window)
@@ -47,8 +56,11 @@ payout = income × disruption_factor × (hours_lost / total_working_hours)
 Uses last 2–3 weeks historical data
 Calculates average risk for each location
 Automatically assigns pricing tier:
+
 Low Risk → ₹10/week  
-Medium Risk → ₹25/week  
+
+Medium Risk → ₹25/week 
+
 High Risk → ₹40/week   
 
 # 4. Parametric Triggers
