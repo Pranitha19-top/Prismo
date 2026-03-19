@@ -1,19 +1,13 @@
 # Prismo
-# Team Name: PRABHA
+# 👥 Team Name: PRABHA
 AI powered parametric insurance platform for gig workers
-
-🚀 PRISMO
-AI-powered income protection for gig workers
-
-👥 Team Name: PRABHA
-
 🚀 Automatically detects disruptions and compensates gig workers based on actual income loss
 💡 Core innovation: Personalized payout + dynamic pricing
 
 # Problem Statement
 Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion, and curfews.These uncontrollable events reduce their working hours and earnings, and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
 
-# Persona
+# 👤 Persona
 Name: Ravi Kumar
 Role: Swiggy Delivery Partner
 Location: Bangalore
@@ -21,7 +15,7 @@ Daily Income: ₹700
 Working Hours: 9 AM – 5 PM
 Ravi depends on daily earnings. During disruptions, he loses income without any safety net. PRISMO ensures automatic protection and intelligent guidance.
 
-# Solution Overview
+# 💡Solution Overview
 PRISMO is an AI-powered parametric insurance platform that:
 Detects disruptions using real-time data
 Calculates risk using multi-factor inputs
@@ -113,6 +107,17 @@ Payout calculated → ₹420
 Claim triggered automatically
 Amount credited
 Heatmap and premium updated
+
+## 🔁 Workflow
+User registers  
+→ System collects data (weather, AQI, traffic, curfew)  
+→ Risk calculated  
+→ Prediction generated  
+→ Advisor suggests  
+→ Working-hour check  
+→ Overlap calculated  
+→ Payout triggered  
+→ User notified  
 
 
 
