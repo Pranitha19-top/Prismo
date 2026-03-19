@@ -1,14 +1,14 @@
 # Prismo
-# 👥 Team Name: PRABHA
+# Team Name: PRABHA
 AI powered parametric insurance platform for gig workers
-🚀 Automatically detects disruptions and compensates gig workers based on actual income loss
-💡 Core innovation: Personalized payout + dynamic pricing
+Automatically detects disruptions and compensates gig workers based on actual income loss
+Core innovation: Personalized payout with the dynamic pricing
 
 # Problem Statement
-Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion, and curfews.
-These uncontrollable events reduce their working hours and earnings, and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
+Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion and curfews.
+These uncontrollable events reduce their working hours and earnings and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
 
-# 👤 Persona
+#  Persona
 Name: Ravi Kumar
 
 Role: Swiggy Delivery Partner
@@ -21,25 +21,25 @@ Working Hours: 9 AM – 5 PM
 
 Ravi depends on daily earnings. During disruptions, he loses income without any safety net. PRISMO ensures automatic protection and intelligent guidance.
 
-# 💡Solution Overview
-PRISMO is an AI-powered parametric insurance platform that:
+# Solution Overview
+PRISMO is an AI powered Parametric insurance platform that :
 Detects disruptions using real-time data
-Calculates risk using multi-factor inputs
+Calculates risk using multi factor inputs
 Predicts upcoming disruptions
 Automatically triggers payouts
 Dynamically adjusts weekly premium
-Suggests optimal working hours to reduce income loss
+Suggests Optimal working hours to reduce income loss
 
 # Key Features
-# 1. Multi-Factor Risk Detection
+# 1. Multi Factor Risk Detection
  Considers:
 Weather (rain, temperature)
 AQI (pollution)
 Traffic congestion
-Curfew / restrictions
+Curfew or restrictions
 
 # 2.Smart & Personalized Payout Calculation
-PRISMO ensures fair compensation based on actual working-hour disruption overlap.
+PRISMO ensures fair compensation based on actual working hour disruption overlap.
 Example Scenario :
 Worker	Working Hours	Disruption	Effective Loss
 
@@ -120,21 +120,21 @@ Claim triggered automatically
 Amount credited
 Heatmap and premium updated
 
-## 🔁 Workflow
+## Workflow
 User registers  
 → System collects data (weather, AQI, traffic, curfew)  
 → Risk calculated  
 → Prediction generated  
 → Advisor suggests  
-→ Working-hour check  
+→ Working hour check  
 → Overlap calculated  
 → Payout triggered  
 → User notified  
 
-# 🛡️ Adversarial Defense & Anti-Spoofing Strategy
+# Adversarial Defense & Anti-Spoofing Strategy
 # 1. Differentiation: Genuine vs Spoofed Claims
 
-PRISMO does not rely solely on GPS location. Instead, it uses multi-factor behavioral validation to distinguish between genuine workers and spoofed claims.
+PRISMO does not rely solely on GPS location.Instead, it uses multi-factor behavioral validation to distinguish between genuine workers and spoofed claims.
 
 A genuine delivery partner shows consistent activity patterns such as:
 
@@ -158,21 +158,21 @@ The system uses these behavioral signals to classify claims as valid or suspicio
 
 PRISMO uses multiple data points to detect fraud:
 
-📍 GPS trajectory (not just current location)
+GPS trajectory (not just current location)
 
-🚴 Movement pattern (speed, direction changes)
+Movement pattern (speed, direction changes)
 
-⏱ Activity logs (active vs idle time)
+Activity logs (active vs idle time)
 
-📦 Delivery activity (order pickup/drop frequency)
+Delivery activity (order pickup/drop frequency)
 
-🌐 Network signals (sudden disconnections or anomalies)
+Network signals (sudden disconnections or anomalies)
 
-🕒 Time consistency (working hours vs claim time)
+Time consistency (working hours vs claim time)
 
 By combining these signals, PRISMO builds a trust score for each claim.
 
-# 3. AI-Based Fraud Detection
+# 3. AI Based Fraud Detection
 
 The system applies anomaly detection techniques to identify unusual patterns:
 
@@ -184,7 +184,7 @@ Identifies coordinated fraud patterns across multiple users
 
 This allows PRISMO to detect fraud rings, not just individual frauds.
 
-# 4. UX Balance: Fair Handling of Flagged Claims
+# 4. UX Balance:Fair Handling of Flagged Claims
 
 PRISMO ensures that genuine users are not unfairly penalized.
 
@@ -203,9 +203,9 @@ If fraudulent → claim is rejected
 
 PRISMO shifts from:
 
-👉 “Where is the worker?”
+“Where is the worker?”
 to
-👉 “Is the worker genuinely working?”
+“Is the worker genuinely working?”
 making our platform more reliable.
  
 
