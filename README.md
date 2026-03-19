@@ -119,6 +119,84 @@ User registers
 → Payout triggered  
 → User notified  
 
+# 🛡️ Adversarial Defense & Anti-Spoofing Strategy
+# 1. Differentiation: Genuine vs Spoofed Claims
+
+PRISMO does not rely solely on GPS location. Instead, it uses multi-factor behavioral validation to distinguish between genuine workers and spoofed claims.
+
+A genuine delivery partner shows consistent activity patterns such as:
+
+Continuous movement across locations
+
+Active working hours aligned with delivery patterns
+
+Gradual location transitions
+
+In contrast, spoofed users often show:
+
+Sudden unrealistic location jumps
+
+Static location during claim period
+
+No supporting activity patterns
+
+The system uses these behavioral signals to classify claims as valid or suspicious.
+
+# 2. Data Signals Beyond GPS
+
+PRISMO uses multiple data points to detect fraud:
+
+📍 GPS trajectory (not just current location)
+
+🚴 Movement pattern (speed, direction changes)
+
+⏱ Activity logs (active vs idle time)
+
+📦 Delivery activity (order pickup/drop frequency)
+
+🌐 Network signals (sudden disconnections or anomalies)
+
+🕒 Time consistency (working hours vs claim time)
+
+By combining these signals, PRISMO builds a trust score for each claim.
+
+# 3. AI-Based Fraud Detection
+
+The system applies anomaly detection techniques to identify unusual patterns:
+
+Detects abnormal movement behavior
+
+Flags inconsistent activity patterns
+
+Identifies coordinated fraud patterns across multiple users
+
+This allows PRISMO to detect fraud rings, not just individual frauds.
+
+# 4. UX Balance: Fair Handling of Flagged Claims
+
+PRISMO ensures that genuine users are not unfairly penalized.
+
+When a claim is flagged:
+
+It is temporarily marked as “Under Review” instead of being rejected
+
+The system checks additional signals before final decision
+
+Workers are notified transparently
+
+If validated → payout is processed
+If fraudulent → claim is rejected
+
+# 5. Key Insight
+
+PRISMO shifts from:
+
+👉 “Where is the worker?”
+to
+👉 “Is the worker genuinely working?”
+making our platform more reliable.
+ 
+
 
 
 
