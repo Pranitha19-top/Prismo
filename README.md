@@ -2,6 +2,14 @@
 # Team Name: PRABHA
 AI powered parametric insurance platform for gig workers
 
+🚀 PRISMO
+AI-powered income protection for gig workers
+
+👥 Team Name: PRABHA
+
+🚀 Automatically detects disruptions and compensates gig workers based on actual income loss
+💡 Core innovation: Personalized payout + dynamic pricing
+
 # Problem Statement
 Gig economy workers (Swiggy, Zomato delivery partners) frequently lose income due to external disruptions such as heavy rainfall, extreme heat, pollution, traffic congestion, and curfews.These uncontrollable events reduce their working hours and earnings, and currently there is no automated system to protect their income, forcing workers to bear the full financial loss.
 
