@@ -1,7 +1,9 @@
 # Prismo
 # Team Name: PRABHA
 AI Powered Parametric insurance platform for gig workers
+
 It Automatically detects disruptions and compensates gig workers based on actual income loss
+
 Core innovation: Personalized payout with the dynamic pricing
 
 # Problem Statement
@@ -10,10 +12,15 @@ These uncontrollable events reduce their working hours and earnings and currentl
 
 #  Persona
 Name: Ravi Kumar
+
 Role: Swiggy Delivery Partner
+
 Location: Bangalore
+
 Daily Income: ₹700
+
 Working Hours: 9 AM – 5 PM
+
 Ravi depends on daily earnings. During disruptions, he loses income without any safety net. PRISMO ensures automatic protection and intelligent guidance.
 
 # Solution Overview
@@ -42,15 +49,20 @@ Sanjay	working from (2 PM – 9 PM) and rain from (3 PM – 7 PM)- 	4 hours loss
 Same disruption, different loss → different payouts
 
 # Payout Logic
+
 hours_lost = overlap(working_hours, disruption_window)
+
 payout = income × disruption_factor × (hours_lost / total_working_hours)
 
 # 3.Dynamic Weekly Premium Pricing
 Uses last 2–3 weeks historical data
 Calculates average risk for each location
 Automatically assigns pricing tier:
+
 Low Risk → ₹10/week  
+
 Medium Risk → ₹25/week 
+
 High Risk → ₹40/week   
 
 # 4. Parametric Triggers
@@ -62,17 +74,23 @@ Curfew active
 
 # 5. Smart Work Advisor
 Provides suggestions to reduce income loss:
+
 High risk from 3PM–8PM  
+
 Work between 9AM–2PM
 
 # 6. Fraud Detection
 Location validation
+
 Time validation
+
 Duplicate claim prevention
+
 Activity consistency checks
 
 # 7. Risk Heatmap 
 Real time: shows current risk zones
+
 Historical: used for premium calculation
 
 # 8. Working Hour-Based Coverage Policy
@@ -80,10 +98,12 @@ Coverage is defined based on location specific working hours.
 
 # Non-Metropolitan Cities
 Coverage: 6:00 AM – 9:00 PM
+
 Claims outside this window are not eligible
 
 # Metropolitan Cities
 Coverage: 6:00 AM – 3:00 AM
+
 Extended coverage due to higher demand
 
 # AI/ML Integration
@@ -93,8 +113,11 @@ Fraud detection using anomaly detection
 
 # Tech Stack
 Frontend: React
+
 Backend: FastAPI (Python3)
+
 Database: SQL
+
 APIs: Weather, AQI, Traffic 
 
 
