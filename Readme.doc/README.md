@@ -1,7 +1,7 @@
 # Prismo
 # Team Name: PRABHA
-AI powered parametric insurance platform for gig workers
-Automatically detects disruptions and compensates gig workers based on actual income loss
+AI Powered Parametric insurance platform for gig workers
+It Automatically detects disruptions and compensates gig workers based on actual income loss
 Core innovation: Personalized payout with the dynamic pricing
 
 # Problem Statement
@@ -22,8 +22,8 @@ Working Hours: 9 AM – 5 PM
 Ravi depends on daily earnings. During disruptions, he loses income without any safety net. PRISMO ensures automatic protection and intelligent guidance.
 
 # Solution Overview
-PRISMO is an AI powered Parametric insurance platform that :
-Detects disruptions using real-time data
+PRISMO is an AI powered parametric insurance platform that :
+Detects disruptions using real time data
 Calculates risk using multi factor inputs
 Predicts upcoming disruptions
 Automatically triggers payouts
@@ -89,7 +89,7 @@ Duplicate claim prevention
 Activity consistency checks
 
 # 7. Risk Heatmap 
-Real-time: shows current risk zones
+Real time: shows current risk zones
 
 Historical: used for premium calculation
 
@@ -105,7 +105,7 @@ Coverage: 6:00 AM – 3:00 AM
 Extended coverage due to higher demand
 
 # AI/ML Integration
-Risk prediction using multi-factor inputs
+Risk prediction using multi factor inputs
 
 Dynamic premium pricing using historical data
 
@@ -134,7 +134,7 @@ Advisor suggests safer working hours
 
 System checks working-hour eligibility
 
-Overlap calculated → 2 hours loss
+Overlap calculated - 2 hours loss
 
 Payout calculated 
 
@@ -142,7 +142,7 @@ Claim triggered automatically
 
 Amount credited
 
-Heatmap and premium updated
+Heatmap and Pemium updated
 
 ## Workflow
 User registers  
