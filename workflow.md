@@ -33,3 +33,12 @@
    - Historical data
    - Risk heatmap
    - Premium pricing
+
+![Step 1](flowchart-1.jpeg)
+![Step 2](flowchart-2.jpeg)
+![Step 3](flowchart-3.jpeg)
+![Step 4](flowchart-4.jpeg)
+
+
+<img src="flowchart-1.jpeg" width="700"/>
+<img src="flowchart-2.jpeg" width="700"/>
