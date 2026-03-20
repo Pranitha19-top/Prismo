@@ -39,6 +39,3 @@
 ![Step 3](flowchart-3.jpeg)
 ![Step 4](flowchart-4.jpeg)
 
-
-<img src="flowchart-1.jpeg" width="700"/>
-<img src="flowchart-2.jpeg" width="700"/>
