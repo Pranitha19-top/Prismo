@@ -1,0 +1,272 @@
+import React, { useEffect, useState } from 'react'
+import { getZoneAnalytics, getSameZoneComparison, getDisruptionEvents, createDisruptionEvent } from '../utils/api'
+import { Card, KPICard, Spinner, Tag, RiskBadge } from '../components/UI'
+
+const ZONES = ['Kasavanahalli', 'Bellandur', 'HSR Layout', 'Electronic City', 'Whitefield', 'Marathahalli', 'Lakdikapul']
+
+export default function AdminZoneAnalytics() {
+  const [analytics, setAnalytics] = useState([])
+  const [events, setEvents] = useState([])
+  const [comparison, setComparison] = useState(null)
+  const [selectedZone, setSelectedZone] = useState('Kasavanahalli')
+  const [loading, setLoading] = useState(true)
+  const [creating, setCreating] = useState(false)
+  const [createMsg, setCreateMsg] = useState('')
+  const [form, setForm] = useState({
+    city: 'Bengaluru', zone: 'Kasavanahalli', event_type: 'rain',
+    event_start: '', event_end: '', severity: 'medium',
+    disruption_factor: 0.7, description: '',
+  })
+
+  const reload = () => {
+    setLoading(true)
+    Promise.all([
+      getZoneAnalytics(),
+      getDisruptionEvents(),
+      getSameZoneComparison(selectedZone),
+    ]).then(([a, e, c]) => { setAnalytics(a); setEvents(e); setComparison(c) })
+    .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { reload() }, [selectedZone])
+
+  const handleCreate = async (e) => {
+    e.preventDefault()
+    setCreating(true); setCreateMsg('')
+    try {
+      await createDisruptionEvent({
+        ...form,
+        disruption_factor: parseFloat(form.disruption_factor),
+      })
+      setCreateMsg('✓ Disruption event created')
+      reload()
+    } catch (err) {
+      setCreateMsg(`✗ ${err?.response?.data?.detail || 'Failed'}`)
+    } finally { setCreating(false) }
+  }
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  if (loading) return <div className="pt-20"><Spinner /></div>
+
+  return (
+    <div className="pt-20 pb-12 px-4 max-w-6xl mx-auto fade-in">
+      <div className="mb-6">
+        <div className="text-text-dim text-xs font-mono mb-1">ADMIN · ZONE ANALYTICS</div>
+        <div className="font-display font-bold text-2xl text-text">Zone & Event Management</div>
+      </div>
+
+      {/* Zone analytics table */}
+      <Card className="mb-4">
+        <div className="text-text-dim text-xs font-mono mb-4">ZONE RISK & PREMIUM OVERVIEW</div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-text-dim text-xs font-mono border-b border-border">
+                <th className="text-left pb-2">Zone</th>
+                <th className="text-right pb-2">21d Avg Risk</th>
+                <th className="text-left pb-2 pl-3">Level</th>
+                <th className="text-right pb-2">Weekly Premium</th>
+                <th className="text-right pb-2">Claims</th>
+                <th className="text-right pb-2">Total Payout</th>
+              </tr>
+            </thead>
+            <tbody>
+              {analytics.map(z => (
+                <tr key={z.zone} className="border-b border-border/50 last:border-0 hover:bg-border/10 cursor-pointer"
+                  onClick={() => setSelectedZone(z.zone)}>
+                  <td className="py-2.5 text-text font-medium">{z.zone}</td>
+                  <td className="py-2.5 text-right font-mono text-text">{z.avg_risk.toFixed(1)}</td>
+                  <td className="py-2.5 pl-3"><RiskBadge level={z.risk_level} size="xs" /></td>
+                  <td className="py-2.5 text-right font-mono text-accent font-bold">₹{z.premium.weekly_premium}</td>
+                  <td className="py-2.5 text-right text-text-dim">{z.claims_count}</td>
+                  <td className="py-2.5 text-right font-mono text-text">₹{z.total_payout}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="text-text-dim text-xs mt-2">Click a row to compare workers in that zone</div>
+        </div>
+      </Card>
+
+      {/* Same-zone worker comparison */}
+      {comparison && (
+        <Card className="mb-4">
+          <div className="text-text-dim text-xs font-mono mb-3">
+            SAME-ZONE WORKER COMPARISON — {comparison.zone.toUpperCase()}
+          </div>
+          <div className="text-text-dim text-xs mb-3">
+            Workers in the same zone may receive different payouts based on their shift overlap with disruption events.
+          </div>
+          {comparison.workers.length === 0 ? (
+            <div className="text-text-dim text-sm">No workers in this zone.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-text-dim text-xs font-mono border-b border-border">
+                    <th className="text-left pb-2">Worker</th>
+                    <th className="text-left pb-2">Shift</th>
+                    <th className="text-right pb-2">Income</th>
+                    <th className="text-right pb-2">Premium</th>
+                    <th className="text-right pb-2">Claims</th>
+                    <th className="text-right pb-2">Total Payout</th>
+                    <th className="text-left pb-2 pl-3">Payment</th>
+                    <th className="text-right pb-2">Last Overlap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparison.workers.map(w => (
+                    <tr key={w.id} className="border-b border-border/50 last:border-0">
+                      <td className="py-2.5 font-medium text-text">{w.name}</td>
+                      <td className="py-2.5 font-mono text-text-dim text-xs">{w.shift}</td>
+                      <td className="py-2.5 text-right text-text-dim font-mono">₹{w.daily_income}</td>
+                      <td className="py-2.5 text-right font-mono text-accent">₹{w.weekly_premium}</td>
+                      <td className="py-2.5 text-right text-text-dim">{w.claims_count}</td>
+                      <td className="py-2.5 text-right font-mono text-accent font-bold">₹{w.total_payout.toFixed(0)}</td>
+                      <td className="py-2.5 pl-3">
+                        <Tag color={{ ACTIVE: 'green', PAYMENT_DUE: 'yellow', GRACE_PERIOD: 'orange', FROZEN: 'red' }[w.payment_status] || 'gray'}>
+                          {w.payment_status?.replace('_',' ')}
+                        </Tag>
+                      </td>
+                      <td className="py-2.5 text-right">
+                        {w.latest_claim ? (
+                          <div>
+                            <div className="text-accent text-xs font-mono">{w.latest_claim.overlap_hours}h overlap</div>
+                            <div className="text-text-dim text-xs">₹{w.latest_claim.payout}</div>
+                          </div>
+                        ) : <span className="text-text-dim text-xs">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Explanation box */}
+          {comparison.workers.length >= 2 && (
+            <div className="mt-4 bg-surface rounded-lg p-3 text-xs text-text-dim">
+              <span className="text-accent font-mono font-bold">Why different payouts?</span>{' '}
+              Workers in <span className="text-text">{comparison.zone}</span> share the same disruption events
+              but have different shift windows. A worker whose shift overlaps more with the disruption window earns a higher payout.
+              Formula: <span className="text-accent font-mono">daily_income × disruption_factor × (overlap_hours / shift_hours)</span>
+            </div>
+          )}
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Disruption events */}
+        <Card>
+          <div className="text-text-dim text-xs font-mono mb-3">ALL DISRUPTION EVENTS</div>
+          {events.length === 0 ? (
+            <div className="text-text-dim text-sm">No events yet.</div>
+          ) : (
+            <div className="max-h-80 overflow-y-auto space-y-2">
+              {events.map(ev => (
+                <div key={ev.id} className="border border-border rounded-lg p-3">
+                  <div className="flex items-start justify-between mb-1">
+                    <div>
+                      <span className="text-text text-sm font-medium capitalize">{ev.event_type}</span>
+                      <span className="text-text-dim text-xs mx-2">—</span>
+                      <span className="text-text-dim text-xs">{ev.zone}, {ev.city}</span>
+                    </div>
+                    <Tag color={ev.severity === 'high' || ev.severity === 'critical' ? 'red' : ev.severity === 'medium' ? 'yellow' : 'green'}>
+                      {ev.severity}
+                    </Tag>
+                  </div>
+                  <div className="text-text-dim text-xs font-mono">
+                    {ev.event_start.slice(0,16)} → {ev.event_end.slice(0,16)}
+                  </div>
+                  <div className="text-text-dim text-xs mt-1">Factor: {ev.disruption_factor} · {ev.source}</div>
+                  {ev.description && <div className="text-text-dim text-xs mt-0.5">{ev.description}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {/* Create event form */}
+        <Card>
+          <div className="text-text-dim text-xs font-mono mb-3">CREATE DISRUPTION EVENT</div>
+          <form onSubmit={handleCreate} className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">CITY</label>
+                <select value={form.city} onChange={e => set('city', e.target.value)}
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent">
+                  {['Bengaluru','Hyderabad','Mumbai','Delhi'].map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">ZONE</label>
+                <select value={form.zone} onChange={e => set('zone', e.target.value)}
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent">
+                  {ZONES.map(z => <option key={z}>{z}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">EVENT TYPE</label>
+                <select value={form.event_type} onChange={e => set('event_type', e.target.value)}
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent">
+                  {['rain','traffic','curfew','aqi','flood'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">SEVERITY</label>
+                <select value={form.severity} onChange={e => set('severity', e.target.value)}
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent">
+                  {['low','medium','high','critical'].map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">START (ISO)</label>
+                <input type="datetime-local" value={form.event_start} onChange={e => set('event_start', e.target.value)}
+                  required
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent" />
+              </div>
+              <div>
+                <label className="text-text-dim text-xs font-mono block mb-1">END (ISO)</label>
+                <input type="datetime-local" value={form.event_end} onChange={e => set('event_end', e.target.value)}
+                  required
+                  className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent" />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-text-dim text-xs font-mono block mb-1">DISRUPTION FACTOR (0–1)</label>
+              <input type="number" step="0.05" min="0" max="1" value={form.disruption_factor}
+                onChange={e => set('disruption_factor', e.target.value)}
+                className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent" />
+            </div>
+
+            <div>
+              <label className="text-text-dim text-xs font-mono block mb-1">DESCRIPTION</label>
+              <input type="text" value={form.description} onChange={e => set('description', e.target.value)}
+                placeholder="Optional description"
+                className="w-full bg-surface border border-border rounded px-2 py-2 text-text text-xs focus:outline-none focus:border-accent" />
+            </div>
+
+            {createMsg && (
+              <div className={`text-xs px-3 py-2 rounded ${createMsg.startsWith('✓') ? 'bg-green-950/30 text-green-400 border border-green-700/40' : 'bg-red-950/30 text-red-400 border border-red-700/40'}`}>
+                {createMsg}
+              </div>
+            )}
+
+            <button type="submit" disabled={creating}
+              className="w-full bg-accent hover:bg-accent/90 text-white font-semibold rounded-lg py-2 text-sm transition-colors disabled:opacity-50">
+              {creating ? 'Creating...' : 'Create Disruption Event'}
+            </button>
+          </form>
+        </Card>
+      </div>
+    </div>
+  )
+}

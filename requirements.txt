@@ -1,0 +1,125 @@
+import React, { useEffect, useRef } from 'react'
+
+// Zone coordinates for Bangalore
+const ZONE_COORDS = {
+  "Kasavanahalli": { lat: 12.9081, lng: 77.6818, radius: 1800 },
+  "Bellandur":     { lat: 12.9257, lng: 77.6799, radius: 2000 },
+  "HSR Layout":    { lat: 12.9116, lng: 77.6479, radius: 1600 },
+  "Electronic City": { lat: 12.8399, lng: 77.6770, radius: 2200 },
+  "Whitefield":    { lat: 12.9698, lng: 77.7499, radius: 2500 },
+  "Marathahalli":  { lat: 12.9591, lng: 77.6972, radius: 1700 },
+}
+
+const RISK_COLORS = {
+  LOW:    { fill: '#22c55e', stroke: '#16a34a', fillOpacity: 0.35 },
+  MEDIUM: { fill: '#eab308', stroke: '#ca8a04', fillOpacity: 0.40 },
+  HIGH:   { fill: '#ef4444', stroke: '#dc2626', fillOpacity: 0.45 },
+}
+
+export default function RiskMap({ zones = [], selectedZone, onZoneClick }) {
+  const mapRef = useRef(null)
+  const mapInstance = useRef(null)
+  const circlesRef = useRef([])
+
+  useEffect(() => {
+    if (mapInstance.current) return
+
+    const L = window.L
+    if (!L) return
+
+    const map = L.map(mapRef.current, {
+      center: [12.9352, 77.6245],
+      zoom: 12,
+      zoomControl: true,
+      attributionControl: false,
+    })
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '',
+      subdomains: 'abcd',
+      maxZoom: 17,
+    }).addTo(map)
+
+    mapInstance.current = map
+
+    return () => {
+      map.remove()
+      mapInstance.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    const L = window.L
+    const map = mapInstance.current
+    if (!L || !map || !zones.length) return
+
+    circlesRef.current.forEach(c => c.remove())
+    circlesRef.current = []
+
+    zones.forEach(zone => {
+      const coords = ZONE_COORDS[zone.zone]
+      if (!coords) return
+      const style = RISK_COLORS[zone.risk_level] || RISK_COLORS.LOW
+
+      const circle = L.circle([coords.lat, coords.lng], {
+        radius: coords.radius,
+        ...style,
+        weight: 2,
+      }).addTo(map)
+
+      const popupContent = `
+        <div style="font-family:'DM Sans',sans-serif;padding:4px">
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px">${zone.zone}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+            <span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:12px">
+              Risk: <b>${zone.risk_level}</b> (${zone.risk_score?.toFixed(0)})
+            </span>
+            <span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:12px">🌧 ${zone.rain}mm</span>
+            <span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:12px">💨 AQI ${zone.aqi?.toFixed(0)}</span>
+            <span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:12px">🚦 Traffic ${zone.traffic_level}/5</span>
+            ${zone.curfew ? '<span style="background:rgba(220,38,38,0.3);padding:2px 8px;border-radius:12px">🚫 Curfew</span>' : ''}
+          </div>
+        </div>
+      `
+
+      circle.bindPopup(popupContent)
+      circle.on('click', () => onZoneClick && onZoneClick(zone))
+
+      // Pulse for high risk
+      if (zone.risk_level === 'HIGH') {
+        const pulse = L.circle([coords.lat, coords.lng], {
+          radius: coords.radius * 1.3,
+          fill: false,
+          color: '#ef4444',
+          weight: 1,
+          opacity: 0.3,
+        }).addTo(map)
+        circlesRef.current.push(pulse)
+      }
+
+      // Label
+      const icon = L.divIcon({
+        html: `<div style="
+          background:rgba(13,15,20,0.85);
+          border:1px solid #1e2330;
+          border-radius:6px;
+          padding:2px 6px;
+          font-size:10px;
+          font-family:'DM Sans',sans-serif;
+          white-space:nowrap;
+          color:#e2e8f0;
+          font-weight:500;
+        ">${zone.zone}</div>`,
+        className: '',
+        iconAnchor: [40, 10],
+      })
+      const marker = L.marker([coords.lat, coords.lng], { icon }).addTo(map)
+      circlesRef.current.push(marker)
+      circlesRef.current.push(circle)
+    })
+  }, [zones])
+
+  return (
+    <div ref={mapRef} style={{ width: '100%', height: '100%', borderRadius: '12px', overflow: 'hidden' }} />
+  )
+}

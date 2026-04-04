@@ -1,0 +1,167 @@
+import React, { useEffect, useState, useContext } from 'react'
+import { getWorkerDashboard, getZonePremium } from '../utils/api'
+import { getUser } from '../utils/auth'
+import { Card, RiskBadge, Spinner } from '../components/UI'
+import { LangContext } from '../App'
+import { t } from '../utils/i18n'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+
+export default function PolicyPage() {
+  const { lang } = useContext(LangContext)
+  const user = getUser()
+  const [dash, setDash] = useState(null)
+  const [zoneHistory, setZoneHistory] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!user) return
+    setLoading(true)
+    Promise.all([
+      getWorkerDashboard(user.id),
+      getZonePremium(user.zone || 'Kasavanahalli'),
+    ]).then(([d, zp]) => {
+      setDash(d)
+      setZoneHistory(zp.history?.slice(0, 14).reverse() || [])
+    }).finally(() => setLoading(false))
+  }, [user?.id])
+
+  if (loading) return <div className="pt-20"><Spinner /></div>
+  const worker = dash?.worker
+  const premium = dash?.premium
+
+  return (
+    <div className="pt-20 pb-12 px-4 max-w-2xl mx-auto fade-in">
+
+      {/* Policy overview */}
+      <Card className="mb-4">
+        <div className="text-text-dim text-xs font-mono mb-3">MY POLICY</div>
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <RiskBadge level={premium?.tier || 'LOW'} size="md" />
+              <span className="font-display font-bold text-2xl text-text">₹{premium?.weekly_premium}/week</span>
+            </div>
+            <div className="space-y-1 text-sm text-text-dim">
+              <div>📍 Zone: <span className="text-text">{worker?.zone}</span></div>
+              <div>🏙 City: <span className="text-text">{worker?.city} {worker?.is_metro ? '(Metro)' : '(Non-Metro)'}</span></div>
+              <div>🕐 Shift: <span className="text-text">{worker?.shift_start} – {worker?.shift_end}</span></div>
+              <div>💰 Daily income: <span className="text-text">₹{worker?.daily_income}</span></div>
+            </div>
+          </div>
+          <div className="text-5xl">🛡</div>
+        </div>
+      </Card>
+
+      {/* Premium breakdown */}
+      <Card className="mb-4">
+        <div className="text-text-dim text-xs font-mono mb-3">{t(lang, 'premiumBreakdown').toUpperCase()}</div>
+        <div className="space-y-3">
+          <PremiumRow
+            icon="📊"
+            title={t(lang, 'basePremium')}
+            desc={`Based on current zone risk level: ${premium?.base_tier}`}
+            value={`₹${premium?.base}`}
+            note="LOW=₹10 · MEDIUM=₹25 · HIGH=₹40"
+          />
+          <PremiumRow
+            icon="🏙"
+            title={t(lang, 'metroBonus')}
+            desc={worker?.is_metro ? 'Your city (Bengaluru/Hyderabad) is a metro — +15% premium' : 'Non-metro city — no metro surcharge'}
+            value={`×${premium?.metro_multiplier}`}
+            highlight={premium?.metro_multiplier > 1}
+          />
+          <PremiumRow
+            icon="📅"
+            title={t(lang, 'safetyBonus')}
+            desc={`7-day avg zone risk: ${premium?.avg_risk_7d?.toFixed(1)}. ${premium?.safety_label}`}
+            value={`×${premium?.safety_multiplier}`}
+            highlight={premium?.safety_multiplier !== 1}
+            good={premium?.safety_multiplier < 1}
+          />
+          <PremiumRow
+            icon="🌙"
+            title={t(lang, 'shiftBonus')}
+            desc={premium?.night_shift ? `Your shift (${worker?.shift_start}–${worker?.shift_end}) overlaps night hours (10PM–6AM). +5%` : `Day shift — no night exposure surcharge`}
+            value={`×${premium?.shift_multiplier}`}
+            highlight={premium?.night_shift}
+          />
+        </div>
+        <div className="mt-4 bg-surface rounded-lg p-3 flex justify-between items-center">
+          <span className="text-text-dim text-sm font-mono">FINAL WEEKLY PREMIUM</span>
+          <span className="text-accent font-display font-bold text-xl">₹{premium?.weekly_premium}</span>
+        </div>
+      </Card>
+
+      {/* 14-day risk history chart */}
+      {zoneHistory.length > 0 && (
+        <Card className="mb-4">
+          <div className="text-text-dim text-xs font-mono mb-3">14-DAY ZONE RISK HISTORY — {worker?.zone?.toUpperCase()}</div>
+          <ResponsiveContainer width="100%" height={120}>
+            <LineChart data={zoneHistory}>
+              <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#64748b' }} tickFormatter={d => d.slice(5)} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: '#64748b' }} width={28} />
+              <Tooltip
+                contentStyle={{ background: '#141720', border: '1px solid #1e2330', borderRadius: 8 }}
+                labelStyle={{ color: '#64748b', fontSize: 11 }}
+                itemStyle={{ color: '#f97316', fontSize: 11 }}
+              />
+              <Line type="monotone" dataKey="risk_score" stroke="#f97316" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex justify-between text-xs text-text-dim font-mono mt-2">
+            <span>7d avg: <span className="text-text">{premium?.avg_risk_7d?.toFixed(1)}</span></span>
+            <span>21d avg: <span className="text-text">{premium?.avg_risk_21d?.toFixed(1)}</span></span>
+          </div>
+        </Card>
+      )}
+
+      {/* Coverage explanation */}
+      <Card className="mb-4">
+        <div className="text-text-dim text-xs font-mono mb-3">HOW PAYOUT IS CALCULATED</div>
+        <div className="bg-surface rounded-lg p-4 font-mono text-xs space-y-2">
+          <div className="text-accent text-sm font-bold">payout = daily_income × disruption_factor × (overlap_hours / total_shift_hours)</div>
+          <div className="text-text-dim">
+            Only the hours your shift actually overlaps with a disruption event count. Two workers in the same zone with different shifts may receive different payouts.
+          </div>
+          <div className="mt-2 text-text-dim">Example:</div>
+          <div className="space-y-1 pl-2 border-l border-border">
+            <div>Shift 9AM–4PM + Rain 3PM–6PM → <span className="text-green-400">1h overlap → smaller payout</span></div>
+            <div>Shift 3PM–9PM + Rain 3PM–6PM → <span className="text-accent">3h overlap → larger payout</span></div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Account states */}
+      <Card>
+        <div className="text-text-dim text-xs font-mono mb-3">PAYMENT STATES EXPLAINED</div>
+        <div className="space-y-2">
+          {[
+            { state: 'ACTIVE', color: 'text-green-400', desc: 'All clear. Premium paid, claims enabled.' },
+            { state: 'PAYMENT_DUE', color: 'text-yellow-400', desc: 'Weekly premium is due. Claims still work but pay soon.' },
+            { state: 'GRACE_PERIOD', color: 'text-orange-400', desc: '2-day grace period after due date. Pay before deadline to avoid freeze.' },
+            { state: 'FROZEN', color: 'text-red-400', desc: 'Account frozen — no claims or payouts until payment is made.' },
+          ].map(({ state, color, desc }) => (
+            <div key={state} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+              <span className={`text-xs font-mono font-bold mt-0.5 ${color}`}>{state.replace('_', ' ')}</span>
+              <span className="text-text-dim text-xs">{desc}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+function PremiumRow({ icon, title, desc, value, highlight = false, good = false, note }) {
+  return (
+    <div className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+      <span className="text-xl flex-shrink-0">{icon}</span>
+      <div className="flex-1">
+        <div className="text-text text-sm font-medium">{title}</div>
+        <div className="text-text-dim text-xs mt-0.5">{desc}</div>
+        {note && <div className="text-text-dim text-xs mt-0.5 font-mono">{note}</div>}
+      </div>
+      <span className={`font-mono font-bold text-sm ${good ? 'text-green-400' : highlight ? 'text-accent' : 'text-text-dim'}`}>{value}</span>
+    </div>
+  )
+}
